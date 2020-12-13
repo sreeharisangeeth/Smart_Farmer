@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
 class Scanner extends StatefulWidget{
@@ -88,7 +89,7 @@ class _ScannerState extends State<Scanner> {
                           child: Row(
                             children: <Widget>[
                               FaIcon(FontAwesomeIcons.camera,color: Colors.white,),
-                              SizedBox(width: 5,),
+                              SizedBox(width: 10,),
                               Text("Capture",
                                 style: TextStyle(color: Colors.white,fontSize: 15),),
                             ],
@@ -97,14 +98,14 @@ class _ScannerState extends State<Scanner> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           padding: EdgeInsets.fromLTRB(25, 15, 25,15),
-                          color: Colors.redAccent,
+                          color: Colors.deepOrangeAccent,
                         ),
                         RaisedButton(
                           onPressed: uploadImage,
                           child: Row(
                             children: <Widget>[
                               FaIcon(FontAwesomeIcons.image,color: Colors.white,),
-                              SizedBox(width: 5,),
+                              SizedBox(width: 10,),
                               Text("Upload",
                                 style: TextStyle(color: Colors.white,fontSize: 15),),
                             ],
@@ -113,7 +114,7 @@ class _ScannerState extends State<Scanner> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           padding: EdgeInsets.fromLTRB(25, 15, 25,15),
-                          color: Colors.redAccent,
+                          color: Colors.deepOrangeAccent,
                         ),
                       ],
                     ),

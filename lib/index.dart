@@ -99,7 +99,7 @@ class Index extends StatelessWidget{
                           borderRadius: BorderRadius.circular(10),
                         ),
                         padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
-                        color: Colors.redAccent,
+                        color: Colors.deepOrangeAccent,
                         onPressed: () {
                           Navigator.pushNamed(context, '/sign_up');
                         },

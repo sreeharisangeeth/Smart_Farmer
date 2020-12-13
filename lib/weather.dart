@@ -92,13 +92,14 @@ class _WeatherState extends State<Weather> {
           padding: EdgeInsets.all(15.0),
           constraints: BoxConstraints.expand(),
           child: SingleChildScrollView(
+            padding: EdgeInsets.all(5.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.deepOrangeAccent,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.blueGrey,
@@ -121,7 +122,7 @@ class _WeatherState extends State<Weather> {
                             child: Text(
                               location != null ? "Currently in " + location.toString() : "Loading",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.black87,
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -130,12 +131,14 @@ class _WeatherState extends State<Weather> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(
-                                climate != null ? climate.toString() : "Loading",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 35.0,
-                                  fontWeight: FontWeight.w600,
+                              Flexible(
+                                child: Text(
+                                  climate != null ? climate.toString() : "Loading",
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 35.0,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 10,),
@@ -155,7 +158,7 @@ class _WeatherState extends State<Weather> {
                             child: Text(
                               description != null ? description.toString() : "Loading",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.black87,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -182,7 +185,7 @@ class _WeatherState extends State<Weather> {
                               Container(
                                 child: Row(
                                   children: <Widget>[
-                                    FaIcon(FontAwesomeIcons.thermometerHalf),
+                                    FaIcon(FontAwesomeIcons.thermometerHalf,color: Colors.redAccent,),
                                     SizedBox(width: 10.0,),
                                     Text("Temperature",
                                       style: TextStyle(
@@ -211,7 +214,7 @@ class _WeatherState extends State<Weather> {
                               Container(
                                 child: Row(
                                   children: <Widget>[
-                                    FaIcon(FontAwesomeIcons.tint),
+                                    FaIcon(FontAwesomeIcons.tint,color: Colors.blueAccent,),
                                     SizedBox(width: 10.0,),
                                     Text("Humidity",
                                       style: TextStyle(
@@ -240,7 +243,7 @@ class _WeatherState extends State<Weather> {
                               Container(
                                 child: Row(
                                   children: <Widget>[
-                                    FaIcon(FontAwesomeIcons.wind),
+                                    FaIcon(FontAwesomeIcons.wind,color: Colors.black45,),
                                     SizedBox(width: 10.0,),
                                     Text("Wind Speed",
                                       style: TextStyle(
