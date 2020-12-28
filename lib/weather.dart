@@ -49,7 +49,7 @@ class _WeatherState extends State<Weather> {
   }
 
   getCurrentLocation() async {
-    final geoposition = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+    final geoposition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     setState(() {
       this.latitudeData = '${geoposition.latitude}';

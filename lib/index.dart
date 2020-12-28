@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:global_configuration/global_configuration.dart';
 
 class Index extends StatelessWidget{
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context){
@@ -47,6 +52,7 @@ class Index extends StatelessWidget{
                       color: Colors.white,
                       width: double.infinity,
                       child: TextField(
+                        controller: emailController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Email',
@@ -59,6 +65,7 @@ class Index extends StatelessWidget{
                       width: double.infinity,
                       child: TextField(
                         obscureText: true,
+                        controller: passwordController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Password',
@@ -77,8 +84,66 @@ class Index extends StatelessWidget{
                       textColor: Colors.white,
                       padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
                       color: Color(0xFF009966),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/home');
+                      onPressed: () async{
+                        if(emailController.text.isEmpty || passwordController.text.isEmpty){
+                          return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: SingleChildScrollView(
+                                  child: Center(child: Text("Invalid Credentials !",style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 20,
+                                    color: Colors.red,
+                                  ),))
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('close',style: TextStyle(color: Colors.black87,fontSize: 18.0,),),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                        else {
+                          var response = await http.post("https://smart-farmer-3.herokuapp.com/validate?user=${emailController.text}&password=${passwordController.text}");
+                          var connection = response.body;
+                          if(connection == "True"){
+                            await GlobalConfiguration().loadFromAsset("user");
+                            var res = await http.post("https://smart-farmer-3.herokuapp.com/getname?user=${emailController.text}&password=${passwordController.text}");
+                            GlobalConfiguration().updateValue("email", emailController.text);
+                            GlobalConfiguration().updateValue("user", res.body);
+                            Navigator.pushNamed(context, "/home");
+                          }
+                          else{
+                            return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: SingleChildScrollView(
+                                      child: Center(child: Text("Invalid Credentials !",style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 20,
+                                        color: Colors.red,
+                                      ),))
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('close',style: TextStyle(color: Colors.black87,fontSize: 18.0,),),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
                       },
                     ),
                     Divider(

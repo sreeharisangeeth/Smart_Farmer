@@ -7,7 +7,7 @@ import 'package:smart_farmer/scanner.dart';
 import 'package:smart_farmer/news.dart';
 import 'package:smart_farmer/account.dart';
 
-void main() {
+void main() async{
   runApp(
     MaterialApp(
       initialRoute: '/index',

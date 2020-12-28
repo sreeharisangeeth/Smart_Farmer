@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class SignUp extends StatelessWidget {
   @override
@@ -8,6 +9,17 @@ class SignUp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
+    final userController = TextEditingController();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
+    RegExp regExp = new RegExp(
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$",
+      caseSensitive: false,
+      multiLine: false,
+    );
 
     return MaterialApp(
       theme: ThemeData(
@@ -69,6 +81,7 @@ class SignUp extends StatelessWidget {
                             color: Colors.white,
                             width: double.infinity,
                             child: TextField(
+                              controller: userController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: 'Full Name',
@@ -80,6 +93,7 @@ class SignUp extends StatelessWidget {
                             color: Colors.white,
                             width: double.infinity,
                             child: TextField(
+                              controller: emailController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: 'Email',
@@ -91,6 +105,7 @@ class SignUp extends StatelessWidget {
                             color: Colors.white,
                             width: double.infinity,
                             child: TextField(
+                              controller: passwordController,
                               obscureText: true,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
@@ -103,6 +118,7 @@ class SignUp extends StatelessWidget {
                             color: Colors.white,
                             width: double.infinity,
                             child: TextField(
+                              controller: confirmPasswordController,
                               obscureText: true,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
@@ -139,8 +155,54 @@ class SignUp extends StatelessWidget {
                   textColor: Colors.white,
                   padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
                   color: Color(0xFF009966),
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async{
+                    if(userController.text.isEmpty || passwordController.text.isEmpty || emailController.text.isEmpty){
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: Text("All fields are mandatory"),
+                          );
+                        },
+                      );
+                    }
+                    else if(passwordController.text != confirmPasswordController.text){
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: Text("Password mismatch"),
+                          );
+                        },
+                      );
+                    }
+                    else if(!(regExp.hasMatch(emailController.text))){
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: Text("Invalid Email ID"),
+                          );
+                        },
+                      );
+                    }
+                    else{
+                      var response = await http.post("https://smart-farmer-3.herokuapp.com/create?user=${userController.text}&email=${emailController.text}&password=${passwordController.text}");
+                      var create = response.body;
+                      if(create == "Success"){
+                        Navigator.pop(context);
+                      }
+                      else{
+                        return showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: Text("Invalid Credentials !"),
+                            );
+                          },
+                        );
+                      }
+                    }
                   },
                 ),
               ],
