@@ -3,10 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:global_configuration/global_configuration.dart';
 
-class Index extends StatelessWidget{
+class Index extends StatefulWidget{
+
+  @override
+  _IndexState createState() => _IndexState();
+}
+
+class _IndexState extends State<Index> {
+
+  var status = "disconnected";
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context){
@@ -14,6 +28,31 @@ class Index extends StatelessWidget{
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
+    showLoaderDialog(BuildContext context){
+      AlertDialog alert = AlertDialog(
+        content: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget> [
+            SizedBox(height: 15,),
+            CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.green.shade600),
+            ),
+            SizedBox(height: 15,),
+            Text("Loading..." ),
+            SizedBox(height: 15,),
+          ],
+        ),
+      );
+      showDialog(barrierDismissible: false,
+        context:context,
+        builder:(BuildContext context){
+          return alert;
+        },
+      );
+    }
 
     return MaterialApp(
       theme: ThemeData(
@@ -85,7 +124,10 @@ class Index extends StatelessWidget{
                       padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
                       color: Color(0xFF009966),
                       onPressed: () async{
+                        FocusScope.of(context).unfocus();
+                        showLoaderDialog(context);
                         if(emailController.text.isEmpty || passwordController.text.isEmpty){
+                          Navigator.pop(context);
                           return showDialog(
                             context: context,
                             builder: (context) {
@@ -117,9 +159,13 @@ class Index extends StatelessWidget{
                             var res = await http.post("https://smart-farmer-3.herokuapp.com/getname?user=${emailController.text}&password=${passwordController.text}");
                             GlobalConfiguration().updateValue("email", emailController.text);
                             GlobalConfiguration().updateValue("user", res.body);
+                            Navigator.pop(context);
+                            emailController.clear();
+                            passwordController.clear();
                             Navigator.pushNamed(context, "/home");
                           }
                           else{
+                            Navigator.pop(context);
                             return showDialog(
                               context: context,
                               builder: (context) {

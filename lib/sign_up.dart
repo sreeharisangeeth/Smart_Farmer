@@ -155,7 +155,7 @@ class SignUp extends StatelessWidget {
                   textColor: Colors.white,
                   padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
                   color: Color(0xFF009966),
-                  onPressed: () async{
+                  onPressed: () async {
                     if(userController.text.isEmpty || passwordController.text.isEmpty || emailController.text.isEmpty){
                       return showDialog(
                         context: context,

@@ -1,5 +1,4 @@
 import 'package:http/http.dart' as http;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loading/loading.dart';
@@ -91,7 +90,8 @@ class _WeatherState extends State<Weather> {
           color: Colors.white,
           padding: EdgeInsets.all(15.0),
           constraints: BoxConstraints.expand(),
-          child: SingleChildScrollView(
+          child: this.icon != null?
+          SingleChildScrollView(
             padding: EdgeInsets.all(5.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +99,7 @@ class _WeatherState extends State<Weather> {
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.deepOrangeAccent,
+                    color: Colors.orangeAccent.shade100,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.blueGrey,
@@ -150,7 +150,7 @@ class _WeatherState extends State<Weather> {
                               Loading(
                                   indicator: BallPulseIndicator(),
                                   size: 50.0,
-                                  color: Colors.blueAccent),
+                                  color: Colors.green.shade600),
                             ],
                           ),
                           Padding(
@@ -174,102 +174,115 @@ class _WeatherState extends State<Weather> {
                   height: MediaQuery.of(context).size.height * 0.41,
                   padding: EdgeInsets.only(top: 15.0),
                   child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    FaIcon(FontAwesomeIcons.thermometerHalf,color: Colors.redAccent,),
-                                    SizedBox(width: 10.0,),
-                                    Text("Temperature",
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.w600,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Image(image: AssetImage('assets/Thermometer.png'),width: 45,height: 45,),
+                                      SizedBox(width: 10.0,),
+                                      Text("Temperature",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                temperature != null ? temperature.toStringAsFixed(0) + "\u00B0c" : "Loading",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w600,
+                                Text(
+                                  temperature != null ? temperature.toStringAsFixed(0) + "\u00B0c" : "Loading",
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    FaIcon(FontAwesomeIcons.tint,color: Colors.blueAccent,),
-                                    SizedBox(width: 10.0,),
-                                    Text("Humidity",
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.w600,
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Image(image: AssetImage('assets/Humidity.png'),width: 45,height: 45,),
+                                      SizedBox(width: 10.0,),
+                                      Text("Humidity",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                humidity != null ? humidity.toStringAsFixed(0) + "%" : "Loading",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w600,
+                                Text(
+                                  humidity != null ? humidity.toStringAsFixed(0) + "%" : "Loading",
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    FaIcon(FontAwesomeIcons.wind,color: Colors.black45,),
-                                    SizedBox(width: 10.0,),
-                                    Text("Wind Speed",
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.w600,
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  child: Row(
+                                    children: <Widget>[
+                                      Image(image: AssetImage('assets/WindSpeed.png'),width: 45,height: 45,),
+                                      SizedBox(width: 10.0,),
+                                      Text("Wind Speed",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                windSpeed != null ? windSpeed.toStringAsFixed(1) + " km/h" : "Loading",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w600,
+                                Text(
+                                  windSpeed != null ? windSpeed.toStringAsFixed(1) + " km/h" : "Loading",
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 )
               ],
-            ),
+            )
+          ):
+          Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget> [
+                  Loading(
+                      indicator: BallPulseIndicator(),
+                      size: 50.0,
+                      color: Colors.green.shade600),
+                ],
+              )
           ),
         ),
       ),

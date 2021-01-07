@@ -8,9 +8,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 List<Color> temperatureColors = [Colors.orangeAccent,Colors.orange,Colors.deepOrangeAccent,Colors.deepOrange,Colors.red];
+List<Color> windColors = [Colors.blueGrey.shade100,Colors.blueGrey.shade200,Colors.blueGrey.shade300,Colors.blueGrey.shade400,Colors.blueGrey.shade500];
+List<Color> waterColors = [Colors.blue.shade100,Colors.blue.shade200,Colors.blue.shade300,Colors.blue.shade400,Colors.blue.shade500];
+
 
 class Suggestion extends StatefulWidget {
 
@@ -39,6 +40,14 @@ class _SuggestionState extends State<Suggestion> {
   var windDescription;
   var windValue;
   var message;
+  var rule = false;
+  Widget descriptionW = Divider(
+    color: Colors.black12,
+    height: 30,
+    thickness: 1,
+    indent: 0,
+    endIndent: 0,
+  );
 
   Future getSuggestions() async{
     http.Response response = await http.post("https://smart-farmer-3.herokuapp.com/suggestions?crop=${widget.cropName}&temperature=${this.temperature}&wind=${this.windSpeed}&weather=${this.weather}");
@@ -61,7 +70,6 @@ class _SuggestionState extends State<Suggestion> {
           this.temperatureValue = result["temperature_value"];
           this. windDescription = result["wind_description"];
           this.windValue = result["wind_value"];
-          print(this.temperatureValue);
         });
       }
     }
@@ -91,28 +99,25 @@ class _SuggestionState extends State<Suggestion> {
       margin: EdgeInsets.fromLTRB( 2, 0, 0, 0),
       color: temperatureColors[i],
       height: 20,
-      width: MediaQuery.of(context).size.width*0.16,
+      width: MediaQuery.of(context).size.width*0.095,
     )).toList());
   }
 
   List<Container> waterBar(int count) {
     return(List.generate(count, (i) => Container(
-      margin: EdgeInsets.fromLTRB( 0, 0, MediaQuery.of(context).size.width*0.03, 0),
-      child: FaIcon(
-        FontAwesomeIcons.tint,
-        color: Colors.blue,
-      ),
+      margin: EdgeInsets.fromLTRB( 2, 0, 0, 0),
+      color: waterColors[i],
+      height: 20,
+      width: MediaQuery.of(context).size.width*0.1,
     )).toList());
   }
 
   List<Container> windBar(int count) {
     return(List.generate(count, (i) => Container(
-      margin: EdgeInsets.fromLTRB( 0, 0, MediaQuery.of(context).size.width*0.06, 0),
-      child: FaIcon(
-        FontAwesomeIcons.wind,
-        color: Colors.blueGrey,
-        size: 30,
-      ),
+      margin: EdgeInsets.fromLTRB( 2, 0, 0, 0),
+      color: windColors[i],
+      height: 20,
+      width: MediaQuery.of(context).size.width*0.1,
     )).toList());
   }
 
@@ -125,6 +130,24 @@ class _SuggestionState extends State<Suggestion> {
     });
   }
 
+   descriptionWidget(var value) {
+    if(value == false){
+      setState(() {
+        this.descriptionW = Divider(
+          color: Colors.black12,
+          height: 30,
+          thickness: 1,
+          indent: 0,
+          endIndent: 0,
+        );
+      });
+    }
+    else{
+      setState(() {
+        this.descriptionW = Text("");
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -152,145 +175,210 @@ class _SuggestionState extends State<Suggestion> {
           color: Colors.white,
           padding: EdgeInsets.all(15.0),
           constraints: BoxConstraints.expand(),
-          child: SingleChildScrollView(
+          child: this.status != null ?
+          SingleChildScrollView(
             padding: EdgeInsets.all(5.0),
-            child: this.status != null ? this.status?
+            child: this.status?
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget> [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget> [
-                    Text(widget.cropName ?? 'deafault',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                    Flexible(
+                      child: Row(
+                        children: <Widget> [
+                          SizedBox(width: 15,),
+                          Flexible(
+                            child: Text(widget.cropName,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
-                      child: widget.image == null ? Text("Image") : CircleAvatar(
+                      child: widget.image == null ?
+                          Row(
+                            children: <Widget> [
+                              FaIcon(FontAwesomeIcons.seedling),
+                              SizedBox(width: 20,),
+                            ],
+                          )
+                          : CircleAvatar(
                         radius: 50,
                         backgroundImage: FileImage(widget.image,),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20,),
-                Text(
-                  this.description,
-                  style: TextStyle(fontSize: 17),
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: <Widget> [
-                    FaIcon(FontAwesomeIcons.shower,color: Colors.blueGrey,),
-                    SizedBox(width: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: waterBar(this.waterRequirement*2),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: <Widget> [
-                    Text("Current weather: ",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                SizedBox(height: 30,),
+                ExpansionTile(
+                  trailing: FaIcon(FontAwesomeIcons.infoCircle,color: Colors.black45),
+                  title: descriptionW,
+                  children: <Widget>[
+                    SizedBox(height: 20,),
                     Text(
-                      weather != null ? weather : "Loading",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      this.description,
+                      style: TextStyle(fontSize: 17),
                     ),
                   ],
+                  onExpansionChanged: descriptionWidget,
                 ),
-                SizedBox(height: 10.0,),
-                Text(
-                  weatherDescription,
-                  style: TextStyle(
-                    fontSize: 17.0,
+                SizedBox(height: 10,),
+                Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 5.0, left: 5.0, right: 0, bottom: 5.0),
+                    child: ExpansionTile(
+                      trailing: FaIcon(FontAwesomeIcons.infoCircle,color: Colors.black45),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget> [
+                          Image(image: AssetImage('assets/WateringCan.png'),width: 50,height: 50,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: waterBar((this.waterRequirement+this.temperatureValue)~/2),
+                          ),
+                        ],
+                      ),
+                      children: <Widget>[
+                        Row(
+                          children: <Widget> [
+                            Text("Current weather: ",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              weather != null ? weather : "Loading",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.0,),
+                        Text(
+                          weatherDescription,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 10,),
-                Row(
-                  children: <Widget> [
-                    FaIcon(FontAwesomeIcons.thermometerHalf,color: Colors.deepOrange,),
-                    SizedBox(width: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: temperatureBar(this.temperatureValue),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: <Widget> [
-                    Text("Current temperature: ",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 5.0, left: 5.0, right: 0, bottom: 5.0),
+                    child: ExpansionTile(
+                      trailing: FaIcon(FontAwesomeIcons.infoCircle,color: Colors.black45),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget> [
+                          Image(image: AssetImage('assets/Thermometer.png'),width: 50,height: 50,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: temperatureBar(this.temperatureValue),
+                          ),
+                        ],
                       ),
+                      children: <Widget>[
+                        SizedBox(height: 10,),
+                        Row(
+                          children: <Widget> [
+                            Text("Current temperature: ",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              temperature != null ? temperature.toStringAsFixed(0) + "\u00B0c" : "Loading",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.0,),
+                        Text(
+                          temperatureDescription,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17.0,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      temperature != null ? temperature.toStringAsFixed(0) + "\u00B0c" : "Loading",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.0,),
-                Text(
-                  temperatureDescription,
-                  style: TextStyle(
-                    fontSize: 17.0,
                   ),
                 ),
                 SizedBox(height: 10,),
-                Row(
-                  children: <Widget> [
-                    Text("Wind",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                Card(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 5.0, left: 5.0, right: 0, bottom: 5.0),
+                    child: ExpansionTile(
+                      trailing: FaIcon(FontAwesomeIcons.infoCircle,color: Colors.black45),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget> [
+                          Image(image: AssetImage('assets/WindSpeed.png'),width: 50,height: 50,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: windBar(this.windValue),
+                          ),
+                        ],
                       ),
+                      children: <Widget>[
+                        SizedBox(height: 10,),
+                        Row(
+                          children: <Widget> [
+                            Text("Current wind speed: ",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              windSpeed != null ? windSpeed.toStringAsFixed(1) + " km/h" : "Loading",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.0,),
+                        Text(
+                          windDescription,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17.0,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: windBar(this.windValue),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: <Widget> [
-                    Text("Current wind speed: ",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      windSpeed != null ? windSpeed.toStringAsFixed(1) + " km/h" : "Loading",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.0,),
-                Text(
-                  windDescription,
-                  style: TextStyle(
-                    fontSize: 17.0,
                   ),
                 ),
               ],
@@ -332,14 +420,13 @@ class _SuggestionState extends State<Suggestion> {
                         ),
                     ),
                   ],
-                )
-            :
-            Center(
-              child: Loading(
-                  indicator: BallPulseIndicator(),
-                  size: 50.0,
-                  color: Colors.blueAccent),
-            ),
+                ),
+          ):
+          Center(
+            child: Loading(
+                indicator: BallPulseIndicator(),
+                size: 50.0,
+                color: Colors.green.shade600),
           ),
         ),
       ),
